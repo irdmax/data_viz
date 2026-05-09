@@ -10,7 +10,16 @@ def extract_and_save_image():
     """Extract the base64 image from HTML and save as PNG"""
     # Read the HTML file
     html_file = Path('biennale_poster_source.html')
-    html_content = html_file.read_text()
+    
+    if not html_file.exists():
+        print(f"Error: HTML file not found: {html_file}")
+        return False
+    
+    try:
+        html_content = html_file.read_text()
+    except Exception as e:
+        print(f"Error reading HTML file: {e}")
+        return False
     
     # Find the base64 image data using regex
     # Looking for: href="data:image/png;base64,..."
@@ -27,7 +36,7 @@ def extract_and_save_image():
     # Decode base64 to binary
     try:
         image_data = base64.b64decode(base64_data)
-    except Exception as e:
+    except base64.binascii.Error as e:
         print(f"Error decoding base64 data: {e}")
         return False
     
